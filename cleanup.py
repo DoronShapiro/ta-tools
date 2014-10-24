@@ -3,6 +3,7 @@ import shutil
 import zipfile
 
 SUBMISSIONS_FOLDER = "submissions"
+MACOSX_FOLDER = "__MACOSX"
 
 def make_student_directories():
   num_students = 0
@@ -26,7 +27,19 @@ def unzip_submissions():
           os.chdir(file)
           zipped_file = zipfile.ZipFile(student_file)
           zipped_file.extractall()
+          os.remove(student_file)
           num_unzipped += 1
+
+          if MACOSX_FOLDER in os.listdir(os.curdir):
+            shutil.rmtree(MACOSX_FOLDER)
+
+          if len(os.listdir(os.curdir)) == 1:
+            the_only_thing = os.listdir(os.curdir)[0]
+            if os.path.isdir(the_only_thing):
+              for foldered_file in os.listdir(the_only_thing):
+                shutil.copy2(os.path.join(the_only_thing, foldered_file), os.curdir)
+              shutil.rmtree(the_only_thing)
+
           os.chdir(os.pardir)
   print num_unzipped, " files unzipped"
 
