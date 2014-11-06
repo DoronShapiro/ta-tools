@@ -8,6 +8,9 @@ function [ ] = autograde( )
         
         try
             [~, result] = evalc(case_string);
+            if((isrow(expected) && iscolumn(result)) || (iscolumn(expected) && isrow(result)) && should_pass)
+                result = result';
+            end
             if(close_enough(expected, result, threshold) == should_pass)
                 grade = points;
             end
